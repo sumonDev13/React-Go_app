@@ -46,9 +46,34 @@ func main() {
 
 	fmt.Println("Your Application is connected to MONGODB")
 
+	collection = client.Database("golang_db").collection("todos")
+
 	app := fiber.New()
 
-	// PORT := os.Getenv("PORT")
+	//api_routes
 
-	log.Fatal(app.Listen(":" + PORT))
+	app.Get("/api/todos",getTodos)
+	app.Post("/api/todos",createTodos)
+	app.Patch("/api/todos/:id",updateTodos)
+	app.Delete("/api/todos/:id",deleteTodos)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "5000"
+	}
+
+	log.Fatal(app.Listen("0.0.0.0:" + port))
 }
+
+//api_controller
+
+func getTodos( c *fiber.Ctx ) error {}
+	
+
+
+// func createTodos( c *fiber.Ctx ) error {}
+// func updateTodos( c *fiber.Ctx ) error {}
+// func deleteTodos( c *fiber.Ctx ) error {}
+
+
+
