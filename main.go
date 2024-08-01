@@ -1,21 +1,25 @@
 package main
-import ("fmt"
-		"log"
-		"github.com/gofiber/fiber/v2"
-		
+
+import (
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	fmt.Println("Hello Go Application");
+	fmt.Println("Hello react & Go Application");
 
-	var firstName string = "Sumon";
-	const secondName string = "Kumar";
-	thirdName := "Mondal";
+	app := fiber.New();
 
-	fmt.Println(firstName);
-	fmt.Println(secondName);
-	fmt.Println(thirdName);
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("error loading .env file: ", err) 
+	}
 
-	app := fiber.New()
-	log.Fatal(app.Listen(":4000"));
+	PORT := os.Getenv("PORT")
+
+	log.Fatal(app.Listen(":"+PORT));
 }
