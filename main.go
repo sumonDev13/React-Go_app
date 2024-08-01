@@ -1,25 +1,54 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+
+type Todo struct {
+	ID         int `json:"id" bson:"_id"`
+	Completed bool `json:"completed"`
+	Body      string `json:"body"`
+}
+
+var collection *mongo.Collection
+
 func main() {
-	fmt.Println("Hello react & Go Application");
+	fmt.Println("Hello react & Go Application")
 
-	app := fiber.New();
 
-	err := godotenv.Load(".env")
+	err := godotenv.Load(".env");
+
 	if err != nil {
-		log.Fatal("error loading .env file: ", err) 
+		log.Fatal("error loading .env file: ", err)
 	}
 
-	PORT := os.Getenv("PORT")
+	MONGO_URI := os.Getenv("MONGO_URI")
+	clientOptions := options.Client().ApplyURI(MONGO_URI)
+	client,err := mongo.Connect(context.Background(),clientOptions)
 
-	log.Fatal(app.Listen(":"+PORT));
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = client.Ping(context.Background(),nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Your Application is connected to MONGODB")
+
+	app := fiber.New()
+
+	// PORT := os.Getenv("PORT")
+
+	log.Fatal(app.Listen(":" + PORT))
 }
